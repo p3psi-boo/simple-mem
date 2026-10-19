@@ -31,6 +31,29 @@
 
 ## Quick Start
 
+### Local Python development (uv)
+
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/) and Python 3.10+.
+`uv.lock` pins the Hub's direct and transitive dependencies, including the `dev` extra.
+Commit it alongside dependency changes in `pyproject.toml`; Docker installs
+with `--locked` so stale lockfiles fail instead of being silently updated.
+
+```bash
+# Install the Hub and development dependencies from uv.lock
+uv sync --locked --extra dev
+uv run --locked --extra dev pytest -q
+
+# Run the Hub without development dependencies
+uv sync --locked --no-dev
+uv run --locked simple-mem-hub serve
+
+# After editing pyproject.toml, update and commit uv.lock
+uv lock
+
+# Explicitly upgrade a dependency (or use --upgrade for all dependencies)
+uv lock --upgrade-package fastapi
+```
+
 ### 1. Run Central Hub (`simple-mem-hub`) with Docker
 
 ```bash

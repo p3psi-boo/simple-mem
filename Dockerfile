@@ -1,10 +1,11 @@
 # syntax=docker/dockerfile:1
 FROM python:3.12-slim AS runtime
 
+COPY --from=ghcr.io/astral-sh/uv:0.12.17 /uv /usr/local/bin/uv
+
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PATH="/app/.venv/bin:$PATH" \
     SIMPLE_MEM_HOST=0.0.0.0 \
     SIMPLE_MEM_PORT=8765 \
     SIMPLE_MEM_DB_PATH=/data/simple-mem.db \
@@ -24,10 +25,10 @@ RUN groupadd --gid 10001 simplemem \
     && mkdir -p /data \
     && chown -R simplemem:simplemem /data /app
 
-# Install Hub dependencies and package
-COPY pyproject.toml README.md LICENSE ./
+# Install Hub dependencies and package from the committed lockfile
+COPY pyproject.toml uv.lock README.md LICENSE ./
 COPY simple_mem ./simple_mem
-RUN pip install --no-cache-dir .
+RUN uv sync --locked --no-dev --no-editable --no-cache
 
 USER simplemem
 VOLUME ["/data"]
