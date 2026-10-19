@@ -1,0 +1,31 @@
+# Git & VCS
+.git
+.gitignore
+
+# Local virtualenvs, caches & test artifacts
+.venv
+venv
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.egg-info/
+dist/
+build/
+
+# Go edge client sources & compiled binaries (not needed in Python Hub image)
+cmd/
+internal/
+bin/
+go.mod
+go.sum
+
+# Tests & local database files
+tests/
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
